@@ -1,0 +1,131 @@
+SampleModelService.Java
+---
+package com.team3.caps.service;
+
+import org.springframework.stereotype.Service;
+
+import com.team3.caps.model.SampleModel;
+import com.team3.caps.repository.SampleModelRepository;
+
+@Service
+public class SampleModelService {
+    private final SampleModelRepository sampleModelRepository;
+
+    public SampleModelService(SampleModelRepository sampleModelRepository) {
+        this.sampleModelRepository = sampleModelRepository;
+    }
+
+    public SampleModel saveSampleModel(SampleModel sampleModel) {
+        return sampleModelRepository.save(sampleModel);
+    }
+
+}
+------------------------------------------
+SampleController.java
+
+package com.team3.caps.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.team3.caps.model.SampleModel;
+import com.team3.caps.service.SampleModelService;
+
+@Controller
+@RequestMapping("/sample")
+public class SampleController {
+    private final SampleModelService sampleModelService;
+
+    @Autowired
+    public SampleController(SampleModelService sampleModelService) {
+        this.sampleModelService = sampleModelService;
+    }
+
+    @GetMapping("/create")
+    public String createSampleForm(Model model) {
+        model.addAttribute("sampleModel", new SampleModel());
+        return "sampleForm";
+    }
+
+    @PostMapping("/create")
+    public String createSample(SampleModel sampleModel) {
+        sampleModelService.saveSampleModel(sampleModel);
+        return "redirect:/sample/create";
+    }
+}
+
+-----------------------------
+
+SampleForm.html
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Sample</title>
+</head>
+<body>
+    <h1>Create Sample</h1>
+    <form th:action="@{/sample/create}" th:object="${sampleModel}" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" th:field="*{name}"/><br/>
+
+        <label for="weight">Weight:</label>
+        <input type="number" id="weight" th:field="*{weight}"/><br/>
+
+        <input type="submit" value="Create"/>
+    </form>
+    <h2><a href="http://localhost:4000/h2-console">http://localhost:4000/h2-console</a> to access h2 console</h2>
+</body>
+</html>
+
+-------------------------
+SampleModel.java
+
+package com.team3.caps.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "samples")
+@Data // getter, setter, toString, EqualsAndHashCode
+@NoArgsConstructor
+public class SampleModel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int sampleId;
+    @Column(name = "name", nullable = false)
+    private String name;
+    @Column(name = "weight", nullable = false)
+    private int weight;
+
+    public SampleModel(String name, int weight) {
+        this.name = name;
+        this.weight = weight;
+    }
+}
+
+------------------
+SampleModelrepository.java
+
+package com.team3.caps.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.team3.caps.model.SampleModel;
+
+public interface SampleModelRepository extends JpaRepository<SampleModel, Long> {
+
+}

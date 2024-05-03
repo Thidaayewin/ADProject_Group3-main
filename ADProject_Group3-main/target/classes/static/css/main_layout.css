@@ -1,0 +1,9 @@
+.nav li {
+    width: 300px; 
+}
+
+.nav li.active-menu {
+    width: 100%; 
+    background-color: #e0e0e0;
+    color: #000;
+}

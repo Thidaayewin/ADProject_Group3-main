@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rainfall Forecast</title>
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="/css/animate.min.css" rel="stylesheet"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="/css/pe-icon-7-stroke.css" type="text/css" rel="stylesheet" />
+    <link href="/css/light-bootstrap-dashboard.css" type="text/css" rel="stylesheet"/>
+</head>
+
+<body>
+    
+    <!-- 
+
+     -->
+     <div class="container text-left mt-2">
+        <div class="row justify-content-start">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="weather_station">Station:</label>
+                    <select class="form-control" id="weather_station" name="weather_station">
+                        <!-- options here -->
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="model">Model Type:</label>
+                    <select class="form-control" id="model" name="model">
+                        <!-- options here -->
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="modelNumber">Model Number:</label>
+                    <select class="form-control" id="modelNumber" name="modelNumber">
+                        <!-- options here -->
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-start">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="wRMSE">wRMSE Period:</label>
+                    <select class="form-control" id="wRMSE" name="wRMSE">
+                        <option value="1">1 Month</option>
+                        <option value="3">3 Months</option>
+                        <option value="6">6 Months</option>
+                        <option value="12">12 Months</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="wMAPE">wMAPE Period:</label>
+                    <select class="form-control" id="wMAPE" name="wMAPE">
+                        <option value="1">1 Month</option>
+                        <option value="3">3 Months</option>
+                        <option value="6">6 Months</option>
+                        <option value="12">12 Months</option>
+                    </select>
+                </div>
+            </div>
+            
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="start_date">Start Date:</label>
+                        <input class="form-control" type="month" id="start_date" name="start_date" min="yyyy-MM" max="yyyy-MM" step="1">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="end_date">End Date:</label>
+                        <input class="form-control" type="month" id="end_date" name="end_date" min="yyyy-MM" max="yyyy-MM" step="1">
+                        <p id="dateError" style="color: #ff9999; display: none; font-size: 14px;" >End date must be later than the start date.</p>
+                        <p id="endDateLimit" style="color: #ff9999; display: none; font-size: 14px;" >End date must be within 1 year from the start date.</p>
+                        <p id="stationStartError" style="color: #ff9999; display: none; font-size: 14px;" >Lack of data, select a later date.</p>
+                        <p id="selectedDates" style="font-size:14px;"></p>
+                    </div>
+                </div>
+            
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <button id="submitBtn" type="button" class="btn btn-primary">Forecast</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title">Real Time Rainfall Forecast(monthly)</h4>
+                        </div>
+                        <div class="content">
+                            <div th:replace="${linePlot}"></div>
+                            
+                            <div class="footer">
+                                <!-- <hr>
+                                <div class="stats">
+                                    <i class="fa fa-history"></i> Updated 3 minutes ago
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="header">
+                            <!-- <h4 class="title">Real Time Rainfall Forecast</h4> -->
+                            
+                        </div>
+                        <div class="content">
+                            <!-- <div id="chartHours" class="ct-chart"></div> -->
+                            <div th:replace="${scatterPlot}"></div>
+                            
+                            <div class="footer">
+                                <!-- <hr>
+                                <div class="stats">
+                                    <i class="fa fa-history"></i> Updated 3 minutes ago
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="header">
+                           
+                            
+                        </div>
+                        <div class="content">
+                            
+                            <div th:replace="${monthlyPlot}"></div>
+                            
+                            <div class="footer">
+                                <!-- <hr>
+                                <div class="stats">
+                                    <i class="fa fa-history"></i> Updated 3 minutes ago
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="header">
+                        </div>
+                        <div class="content">
+                            
+                            <div th:replace="${mpsePlot}"></div>
+                            
+                            <div class="footer">
+                                <!-- <hr>
+                                <div class="stats">
+                                    <i class="fa fa-history"></i> Updated 3 minutes ago
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script src="/js/dashboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.1.2/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</html>
